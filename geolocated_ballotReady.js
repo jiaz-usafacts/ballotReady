@@ -29,7 +29,7 @@ X0001:"magenta", X0014:"green", X0005:"gold", X0029:"gold"
 		
 		var tenesee = [-86.7501,36.1708]
 
-var promises = []
+		var censusData = {}
 // for(l in layers){
 // 	var url = dataRoot+layers[l]+".csv"
 // 	//console.log(url)
@@ -40,7 +40,12 @@ var promises = []
 // console.log(promises)
 //,d3.csv("races2b.csv")
 
-Promise.all([d3.json("dp03.json")])
+var population = d3.json('data/population/B01003_001E_shapes.json')
+var households = d3.json('data/households/B11012_001E_shapes.json')
+var tenure = d3.json('data/tenure/B25003_003E_B25003_002E_B25003_001E_shapes.json')
+var units = d3.json('data/units/B25024_010E_B25024_009E_B25024_002E_shapes.json')
+
+Promise.all([d3.json("dp03.json"),population, households,tenure,units])
  .then(function(data){
 	 // dp03 = data[0]
  // 	console.log(dp03)
@@ -61,7 +66,10 @@ Promise.all([d3.json("dp03.json")])
  	 var url = `https://ipgeolocation.abstractapi.com/v1/?api_key=${api_key}`;
 //
 //       //getLocation()
+	 console.log(population)
 	 
+	 censusData["population"]=data[1]
+	 censusData["households"]=data[2]
 	 httpGetAsync(url, showLocation)
 	
 	 
@@ -165,7 +173,7 @@ function setCenter(latLng){
 	
 
 	//console.log(map.getStyle().layers)
-	console.log(latLng,pointOnScreen)
+	//console.log(latLng,pointOnScreen)
 	var features = map.queryRenderedFeatures(pointOnScreen, {
 	  	layers: ['group2-5000s-xs_fill','group1-4000s_fill']
 	  })
@@ -179,17 +187,26 @@ function setCenter(latLng){
 			  noDups.push(feature)
 		  }
 	  }
-	  console.log(geoids)
+	 // console.log(geoids)
 	  
-  		console.log(features)
+  	//	console.log(features)
 	  var filter = ['in', 'layer'].concat(geoids);
 	 		  map.setFilter('group2-5000s-xs',filter)
 	 		  map.setFilter('group1-4000s',filter)
 	  
-	  var displayString = noDups.length+" geographies overlap at this location.<br><br>"
+	  var displayString = noDups.length+" geographies overlap at this location.<br><br>These are the positions:<br>"
 	  
 	  var positionsCount = 0
 	  for(var n in noDups){
+		  var geoid = noDups[n]['properties']["geo_id"]
+		  var mtfcc = noDups[n]['properties']["mtfcc"]
+		  var population = censusData["population"][mtfcc+"_"+geoid]
+		  var households = censusData["households"][mtfcc+"_"+geoid]
+		
+		  
+		  displayString+="<br><strong>"+ mtfcc+" "+geoid+"<br>"+"population: "+population+"<br>"
+		  +"households: "+households+"<br></strong>"
+		  
 		  positionsCount+=(noDups[n].properties.positions.split("]").length)
 		 var featureString=  noDups[n].properties.positions.split("],")
 		  for(f in featureString){
@@ -208,7 +225,7 @@ function setCenter(latLng){
 	  	//displayString+=featureString
 	  }
 	  
-	  console.log(positionsCount)
+	 // console.log(positionsCount)
 		//   var uniqueIds = []
 	//   for (var l in layers){
 	// 	  map.setLayoutProperty(
@@ -284,7 +301,7 @@ function drawMap(){
     map = new mapboxgl.Map({
 		container: 'map',
 		style:"mapbox://styles/jiaz-usafacts/cl7ae93ig000515q7lq6tsopd?fresh=true",// ,//newest
-		zoom: 12,
+		zoom: 6,
 		preserveDrawingBuffer: true,
 		minZoom:4,
 		maxZoom:12,// ,
@@ -318,7 +335,7 @@ function drawMap(){
 			 center = [e.lngLat.lng,e.lngLat.lat]
 			  map.flyTo({
 				  center: center,
-				  zoom:9
+				  zoom:8
 			  });
 			  
 			  if(clicked==true){
@@ -334,7 +351,7 @@ function drawMap(){
 	  			if(result!=null){
 	 				center = result.result.center
 					//console.log(center)
-					map.flyTo({center:center, zoom:9})
+					map.flyTo({center:center, zoom:8})
 					if(resulted==true){
 					  	 resulted=false
 					  	 map.on("moveend",function(){
