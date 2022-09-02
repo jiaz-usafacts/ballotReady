@@ -219,77 +219,8 @@ function setCenter(latLng){
 			  
 			  displayString+= position+"<br>"			  
 		  }
-		// featureString= featureString.split("]]")
-		 // console.log(positionsCount,featureString)
-console.log(populationDict)
-		  
-		  //featureString = featureString.join("<br>")
-		  //featureString = featureString.split('\",\"').join("<br>")
-	  	//displayString+=featureString
 	  }
-	  
-	 // console.log(positionsCount)
-		//   var uniqueIds = []
-	//   for (var l in layers){
-	// 	  map.setLayoutProperty(
-	// 	  layers[l]+" copy",
-	// 	  'visibility',
-	// 	  'none'
-	// 	  );
-	//   }
-	//
-	// //  var displayString ="<span class=\"popupTitle\">"+Math.round(latLng[0]*100)/100+","+Math.round(latLng[1]*100)/100+"</span><br>"
-	//
-	//   var existingFeatures = []
-	//   var lineData = []
-	//
-	//   var chartData = {}
-	//
-	//   console.log(features)
-	//
-	//   for(var f in features){
-	// 	  var geoid = features[f].properties.GEOID
-	// 	  if(existingFeatures.indexOf(geoid)==-1){
-	// 		  existingFeatures.push(geoid)
-	// 		  var layer = features[f].layer.id+" copy"
-	// 		 var mtfccId = features[f].properties["MTFCC"]
-	// 		  var mtfccData = dp03[mtfccId][geoid]
-	// 		  chartData[mtfccId]=mtfccData
-	// 		  //console.log(censusData)
-	// 		 // var pop = dataDict[features[f].layer.id][geoid]["pop"]
-	// 		//  var geoName = dataDict[features[f].layer.id][geoid]["geoName"].split(",")[0]
-	//
-	// 		  var positions = positionsData[mtfccId][geoid]
-	// 		  for(var p in positions){
-	// 		  	var position = positions[p]
-	// 			  var level = position.level
-	// 			  var label = position.name
-	// 			  var officeHolder = position.officeholderName
-	// 			  var salary = position.salary
-	// 			  var years = position.totalYearsInOffice
-	// 			  // displayString +="level: "+level+"<br>name: "+label
-	//  // 				  +"<br>office holder: "+officeHolder
-	//  // 				  +"<br>salary: "+salary
-	//  // 				  +"<br>years in office: "+years+"<br>"
-	// 		  }
-	//
-	// 		 // displayString+="<br><span class=\"popupNumbers\">"+"</span><br>"//+positionString
-	//
-	// 		  map.setLayoutProperty(
-	// 		  layer,
-	// 		  'visibility',
-	// 		  'visible'
-	// 		  );
-	// 		  map.setFilter(layer,["==","GEOID",geoid])
-	// 		  map.setPaintProperty(layer, 'line-color', layerColors[mtfccId]);			  //
-	// 		  map.setPaintProperty(layer, 'line-width', 3);			  //
-	// 		  map.setPaintProperty(layer, 'line-opacity', .5);			  //
-	// 		  // map.setPaintProperty(layer, 'fill-outline-color', layerColors[mtfccId]);
-	// 		  // map.setPaintProperty(layer, 'fill-opacity', .2);
-	// 	  }
-	//   }
-
-	//  drawChart(chartData)
+	  drawCircles(opulationsDict)
 	  d3.select("#info").html(displayString)
 }
 
@@ -332,16 +263,15 @@ function drawMap(){
 	 	 // map.on("move",function(){
 	 	 // 	console.log(map.getZoom())
 	 	 // })
-			 var tempColors =["#7cc5c1",
-			"#eca9b9",
-			"#93e8df",
-			"#d6b5e5",
-			"#b6c38a",
-			"#9dbded",
-			"#d7ecb8",
-			"#6eceea",
-			"#e4bf97",
-			"#9dd5ad"]
+			 var tempColors =["#607e78",
+"#53eca6",
+"#39725d",
+"#70e5d4",
+"#369168",
+"#b2dacb",
+"#53c694",
+"#5dac9c"]
+
 			
  			map.setLayoutProperty("group2-5000s-xs",'visibility',"visible");//
 			map.setLayoutProperty("group1-4000s",'visibility',"visible");//
