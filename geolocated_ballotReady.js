@@ -66,7 +66,7 @@ Promise.all([d3.json("dp03.json"),population, households,tenure,units])
  	 var url = `https://ipgeolocation.abstractapi.com/v1/?api_key=${api_key}`;
 //
 //       //getLocation()
-	 console.log(population)
+	 //console.log(population)
 	 
 	 censusData["population"]=data[1]
 	 censusData["households"]=data[2]
@@ -195,7 +195,8 @@ function setCenter(latLng){
 	 		  map.setFilter('group1-4000s',filter)
 	  
 	  var displayString = noDups.length+" geographies overlap at this location.<br><br>These are the positions:<br>"
-	  
+	  var populationsDict ={}
+	  var householdsDict = {}
 	  var positionsCount = 0
 	  for(var n in noDups){
 		  var geoid = noDups[n]['properties']["geo_id"]
@@ -203,6 +204,8 @@ function setCenter(latLng){
 		  var population = censusData["population"][mtfcc+"_"+geoid]
 		  var households = censusData["households"][mtfcc+"_"+geoid]
 		
+		populationsDict[mtfcc]=population
+		householdsDict[mtfcc]=households
 		  
 		  displayString+="<br><strong>"+ mtfcc+" "+geoid+"<br>"+"population: "+population+"<br>"
 		  +"households: "+households+"<br></strong>"
@@ -218,7 +221,7 @@ function setCenter(latLng){
 		  }
 		// featureString= featureString.split("]]")
 		 // console.log(positionsCount,featureString)
-
+console.log(populationDict)
 		  
 		  //featureString = featureString.join("<br>")
 		  //featureString = featureString.split('\",\"').join("<br>")
@@ -322,7 +325,7 @@ function drawMap(){
 	 map.addControl(geocoder)
 				 
       map.on("load",function(){
-	   console.log(map.getStyle().layers)
+	  // console.log(map.getStyle().layers)
 // 		  console.log(userCenter)
 // 	  	setCenter(userCenter)
 	 	 //
@@ -330,15 +333,15 @@ function drawMap(){
 	 	 // 	console.log(map.getZoom())
 	 	 // })
 			 var tempColors =["#7cc5c1",
-"#eca9b9",
-"#93e8df",
-"#d6b5e5",
-"#b6c38a",
-"#9dbded",
-"#d7ecb8",
-"#6eceea",
-"#e4bf97",
-"#9dd5ad"]
+			"#eca9b9",
+			"#93e8df",
+			"#d6b5e5",
+			"#b6c38a",
+			"#9dbded",
+			"#d7ecb8",
+			"#6eceea",
+			"#e4bf97",
+			"#9dd5ad"]
 			
  			map.setLayoutProperty("group2-5000s-xs",'visibility',"visible");//
 			map.setLayoutProperty("group1-4000s",'visibility',"visible");//
@@ -360,16 +363,16 @@ function drawMap(){
 			"G4020",4,
 			"G4040",3,
 			"G4110",2,
-			"G4210",1,
+			"G4210",1,5
 			]
 			)
 	map.setPaintProperty("group1-4000s",'line-width',
 		["match", ["get","mtfcc"], 
-		"G4000",10,
-		"G4020",20,
-		"G4040",30,
-		"G4110",40,
-		"G4210",50,
+		"G4000",1,
+		"G4020",2,
+		"G4040",3,
+		"G4110",4,
+		"G4210",5,1
 		]
 		)
 		
@@ -386,12 +389,12 @@ map.setPaintProperty("group2-5000s-xs",'line-color',
 	
 map.setPaintProperty("group2-5000s-xs",'line-width',
 	["match", ["get","mtfcc"], 
-	"G5220",60,
-	"G5210",70,
-	"G5420",80,
-	"G5200",90,
-	"G5410",100,
-	"G5400",110,
+	"G5220",6,
+	"G5210",7,
+	"G5420",8,
+	"G5200",9,
+	"G5410",10,
+	"G5400",11,11
 	]
 	)
 	
@@ -402,7 +405,7 @@ map.setLayoutProperty("group2-5000s-xs",'line-sort-key',
 	"G5420",4,
 	"G5200",3,
 	"G5410",2,
-	"G5400",1,
+	"G5400",1,1
 	]
 	)
 	
