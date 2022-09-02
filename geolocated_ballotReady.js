@@ -220,8 +220,38 @@ function setCenter(latLng){
 			  displayString+= position+"<br>"			  
 		  }
 	  }
-	  drawCircles(opulationsDict)
-	  d3.select("#info").html(displayString)
+	  d3.selectAll(".info").remove()
+	  drawCircles(populationsDict)
+	 // drawCircles(householdsDict)
+	  d3.select("#info").append("div").attr("class","info").html(displayString)
+}
+
+function drawCircles(data){
+	console.log(data)
+	var max = d3.max(Object.keys(data),function(d){return parseInt(data[d])})
+	var min = d3.min(Object.keys(data),function(d){return parseInt(data[d])})
+	console.log(max)
+	var w = 200
+	var h = 200
+	var p = 10
+	var rScale = d3.scaleSqrt().domain([min,max]).range([0,(h-p*2)/2])
+
+	var svg = d3.select("#info").append("svg").attr('width',w).attr("height",h).attr("class","info")
+	svg.selectAll("circle")
+	.data(Object.keys(data))
+	.enter()
+	.append("circle")
+	.attr("r",function(d){
+		return rScale(data[d])
+	})
+	.attr("cx",100)
+	.attr("cy",function(d){
+		return h-rScale(data[d])-p
+	})
+	.attr("fill","none")
+	.attr("stroke-width",6)
+	.attr("stroke",function(d){return layerColors[d]})
+	.attr("opacity",.5)
 }
 
 
@@ -278,11 +308,11 @@ function drawMap(){
 			
 			map.setPaintProperty("group1-4000s",'line-color',
 			["match", ["get","mtfcc"], 
-			"G4000",tempColors[0],
-			"G4020",tempColors[1],
-			"G4040",tempColors[2],
-			"G4110",tempColors[3],
-			"G4210",tempColors[4],"black"
+			"G4000",layerColors["G4000"],
+			"G4020",layerColors["G4020"],
+			"G4040",layerColors["G4040"],
+			"G4110",layerColors["G4110"],
+			"G4210",layerColors["G4210"],"black"
 			]
 		)
 		
@@ -308,12 +338,12 @@ function drawMap(){
 		
 map.setPaintProperty("group2-5000s-xs",'line-color',
 	["match", ["get","mtfcc"], 
-	"G5220",tempColors[0],
-	"G5210",tempColors[1],
-	"G5420",tempColors[2],
-	"G5200",tempColors[3],
-	"G5410",tempColors[4],
-	"G5400",tempColors[5],"black"
+	"G5220",layerColors["G5220"],
+	"G5210",layerColors["G5210"],
+	"G5420",layerColors["G5420"],
+	"G5200",layerColors["G5200"],
+	"G5410",layerColors["G5410"],
+	"G5400",layerColors["G5400"],"black"
 	]
 	)
 	
