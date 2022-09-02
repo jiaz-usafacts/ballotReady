@@ -222,10 +222,36 @@ function setCenter(latLng){
 	  }
 	  d3.selectAll(".info").remove()
 	  drawCircles(populationsDict)
-	 // drawCircles(householdsDict)
+	  drawHills(populationsDict)
 	  d3.select("#info").append("div").attr("class","info").html(displayString)
 }
-
+function drawHills(data){
+	console.log(data)
+	var max = d3.max(Object.keys(data),function(d){return parseInt(data[d])})
+	var min = d3.min(Object.keys(data),function(d){return parseInt(data[d])})
+	console.log(max)
+	var w = 400
+	var h = 200
+	var p = 10
+	var yScale = d3.scaleSqrt().domain([min,max]).range([0,(h-p*2)])
+	var svg = d3.select("#info").append("svg").attr('width',w).attr("height",h).attr("class","info")
+    const curve = d3.line().curve(d3.curveCardinal);
+	var order = 0
+	var xOffset = 30
+	for(var d in data){
+		console.log(data[d],d)
+		var lineData = [[0+order*xOffset,h-p],[30+order*xOffset,h-p-yScale(data[d])],[60+order*xOffset,h-p]]
+		order+=1
+		svg.append("path")
+		.attr("d",curve(lineData))
+		.attr("fill",function(){return layerColors[d]})
+		.attr("stroke",function(){return layerColors[d]})
+		.attr("opacity",.4)
+		//.attr("fill","none")
+		.attr("stroke-width",2)
+	}
+	
+}
 function drawCircles(data){
 	console.log(data)
 	var max = d3.max(Object.keys(data),function(d){return parseInt(data[d])})
