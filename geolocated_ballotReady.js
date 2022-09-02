@@ -225,6 +225,10 @@ function setCenter(latLng){
 	  drawHills(populationsDict)
 	  d3.select("#info").append("div").attr("class","info").html(displayString)
 }
+function drawSquiggle(data){
+	
+}
+
 function drawHills(data){
 	console.log(data)
 	var max = d3.max(Object.keys(data),function(d){return parseInt(data[d])})
@@ -233,7 +237,7 @@ function drawHills(data){
 	var w = 400
 	var h = 200
 	var p = 10
-	var yScale = d3.scaleSqrt().domain([min,max]).range([0,(h-p*2)])
+	var yScale = d3.scaleSqrt().domain([min,max]).range([5,(h-p*2)])
 	var svg = d3.select("#info").append("svg").attr('width',w).attr("height",h).attr("class","info")
     const curve = d3.line().curve(d3.curveCardinal);
 	var order = 0
