@@ -94,7 +94,7 @@ function showLocation(data) {
 	 map	= drawMap()
  	map.on("load",function(){
 //	 console.log("set center initial")
- 	setCenter(userCenter)
+ 	//setCenter(userCenter)
  })
  
 }
@@ -347,19 +347,22 @@ function drawMap(){
     map = new mapboxgl.Map({
 		container: 'map',
 		style:"mapbox://styles/jiaz-usafacts/cl7ae93ig000515q7lq6tsopd?fresh=true",// ,//newest
-		zoom: 2,
-		preserveDrawingBuffer: true,
-		minZoom:2,
+zoom: 3,
+center: [0, 1],
+				//preserveDrawingBuffer: true,
+		minZoom:3,
 		maxZoom:12,// ,
 		 // maxBounds: maxBounds,
 		center:[-96,37.5],
 		//https://docs.mapbox.com/mapbox-gl-js/example/projections/
-		projection:{
-			name:"albers",
-			center:[-120,45],
-			parallels: [29.5, 45.5]
-			
-		}
+	//	projection:"albers"
+		
+		// {
+			name:"albers"
+// 			center:[-120,45],
+// 			parallels: [29.5, 70]
+//
+// 		}
      });	
 	
 
@@ -390,10 +393,8 @@ function drawMap(){
 "#b2dacb",
 "#53c694",
 "#5dac9c"]
-
-			
- 			map.setLayoutProperty("group2-5000s-xs",'visibility',"visible");//
-			map.setLayoutProperty("group1-4000s",'visibility',"visible");//
+			//
+			//
 			
 			map.setPaintProperty("group1-4000s",'line-color',
 			["match", ["get","mtfcc"], 
@@ -458,6 +459,9 @@ map.setLayoutProperty("group2-5000s-xs",'line-sort-key',
 	]
 	)
 	
+	map.setLayoutProperty("group2-5000s-xs",'visibility',"visible");//
+	 map.setLayoutProperty("group1-4000s",'visibility',"visible");//
+	
 			//map.setLayoutProperty()
 	   
 		  clicked=true
@@ -494,47 +498,3 @@ map.setLayoutProperty("group2-5000s-xs",'line-sort-key',
 		 })
 		 return map
 }
-
-
-function filterOnResult(map,features){
-	
-	// for(var i in features){
-	// 	var layerName = features[i].layer.id.replace("_hover","")
-	// 	 var idKey = layerUniqueIds[layerName]
-	// 	console.log(layerName)
-	// 	if(layerName=="borough"){
-	// 		console.log(features[i])
-	// 		currentBorough = features[i]["properties"][idKey]
-	// 		break
-	//
-	// 	}
-	//
-	// }
-	// 	console.log(currentBorough)
-	// var doubleFilterLayers = ["neighborhood","municipalCourt"]
-	//
-	for(var f in features){
-			//console.log(features[f])
-			 var layerName = features[f].layer.id.replace("_hover","")  	 	  
-			 var idKey = layerUniqueIds[layerName]
-			
-		
-			//console.log(idKey)
-			 var gid = features[f]["properties"][idKey]
-			//console.log([idKey,gid])
- 			map.setFilter(layerName,["==",idKey,gid])
- 			map.setFilter(layerName+"_outline",["==",idKey,gid])
-   		 	map.setPaintProperty(layerName+"_outline",'line-opacity',onOpacity);
-			map.setLayoutProperty(layerName,'visibility',"visible");//
-			map.setLayoutProperty(layerName+"_outline",'visibility',"visible");//
-		
-			
-			
-		 
-
-		 // map.setPaintProperty(layerName,'fill-color',colors[i]);
-		 map.setPaintProperty(layerName,'fill-opacity',offOpacity);
-			//map.setFilter(layerName+"_hover",["!=",idKey,gid])
-		}
-}
-
