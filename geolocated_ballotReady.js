@@ -223,17 +223,69 @@ function setCenter(latLng){
 	  d3.selectAll(".info").remove()
 	  drawCircles(populationsDict)
 	  drawHills(populationsDict)
+//	  drawSquiggle(populationsDict)
 	  d3.select("#info").append("div").attr("class","info").html(displayString)
 }
-function drawSquiggle(data){
-	
-}
 
-function drawHills(data){
+function drawSquiggle(data){
 	console.log(data)
 	var max = d3.max(Object.keys(data),function(d){return parseInt(data[d])})
 	var min = d3.min(Object.keys(data),function(d){return parseInt(data[d])})
 	console.log(max)
+	var w = 400
+	var h = 600
+	var p = 80
+	var yScale = d3.scaleSqrt().domain([min,max]).range([5,(h-p*2)])
+	var svg = d3.select("#info").append("svg").attr('width',w).attr("height",h).attr("class","info")
+    
+    const curve = d3.line().curve(d3.curveLinear);
+	var cW = 10000
+	var cH = 60
+	var offset = 0
+	for(var d in data){
+		
+		var lineData = []
+		var sCount = Math.round(data[d]/cW/2)
+		//console.log(data[d],d,sCount)
+		
+		var leftOver = data[d]%cW
+		for(var s =1; s<=sCount; s++){
+			lineData.push([p,cH*(s-.5)])
+			
+			lineData.push([w-p,cH*(s-.5)])
+			lineData.push([w-p,cH*(s)])
+		//	lineData.push([w-p*.4,cH*(s+.25)])
+			
+			//lineData.push([w-p,cH*(s-.2)])
+			
+			
+			//lineData.push([w-p,cH*(s+.25)])
+			
+			lineData.push([p,cH*(s)])
+			lineData.push([p,cH*(s+.25)])
+	//		lineData.push([p,cH*(s+.5)])
+			//lineData.push([p*s,cH*(s)])
+		}
+		console.log(lineData)
+		svg.append("path")
+		.attr("d",curve(lineData))
+		.attr("fill","none")
+		.attr("stroke",function(){return layerColors[d]})
+		.attr("stroke-width",4)
+		.attr("opacity",1)
+		.attr("transform","translate("+offset+","+offset+")")
+		
+		offset+=4
+		console.log(offset)
+		//break
+	}
+}
+
+function drawHills(data){
+	//console.log(data)
+	var max = d3.max(Object.keys(data),function(d){return parseInt(data[d])})
+	var min = d3.min(Object.keys(data),function(d){return parseInt(data[d])})
+	//console.log(max)
 	var w = 400
 	var h = 200
 	var p = 10
@@ -243,7 +295,7 @@ function drawHills(data){
 	var order = 0
 	var xOffset = 30
 	for(var d in data){
-		console.log(data[d],d)
+		//console.log(data[d],d)
 		var lineData = [[0+order*xOffset,h-p],[30+order*xOffset,h-p-yScale(data[d])],[60+order*xOffset,h-p]]
 		order+=1
 		svg.append("path")
@@ -257,10 +309,10 @@ function drawHills(data){
 	
 }
 function drawCircles(data){
-	console.log(data)
+	//console.log(data)
 	var max = d3.max(Object.keys(data),function(d){return parseInt(data[d])})
 	var min = d3.min(Object.keys(data),function(d){return parseInt(data[d])})
-	console.log(max)
+	//console.log(max)
 	var w = 200
 	var h = 200
 	var p = 10
@@ -295,12 +347,19 @@ function drawMap(){
     map = new mapboxgl.Map({
 		container: 'map',
 		style:"mapbox://styles/jiaz-usafacts/cl7ae93ig000515q7lq6tsopd?fresh=true",// ,//newest
-		zoom: 6,
+		zoom: 2,
 		preserveDrawingBuffer: true,
-		minZoom:4,
+		minZoom:2,
 		maxZoom:12,// ,
 		 // maxBounds: maxBounds,
-		center:[-86.468,32.470]
+		center:[-96,37.5],
+		//https://docs.mapbox.com/mapbox-gl-js/example/projections/
+		projection:{
+			name:"albers",
+			center:[-120,45],
+			parallels: [29.5, 45.5]
+			
+		}
      });	
 	
 
