@@ -295,7 +295,7 @@ function drawHills(data){
 	var w = 400
 	var h = 200
 	var p = 10
-	var yScale = d3.scaleSqrt().domain([min,max]).range([5,6000])
+	var yScale = d3.scaleSqrt().domain([min,max]).range([5,12000])
 	var svg = d3.select("#info").append("svg").attr('width',w).attr("height",h).attr("class","info")
     const curve = d3.line().curve(d3.curveCardinal);
 	var order = 0
@@ -303,7 +303,7 @@ function drawHills(data){
 	for(var d in data){
 		//console.log(data[d],d)
 		var lineData = [[0+order*xOffset,h-p],
-		[30+order*xOffset,h-p-Math.sqrt(yScale(data[d])/Math.PI)]
+		[30+order*xOffset,h-p-Math.sqrt(yScale(data[d])/Math.PI)/2]
 		,[60+order*xOffset,h-p]]
 		order+=1
 		svg.append("path")
