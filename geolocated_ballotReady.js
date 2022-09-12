@@ -11,20 +11,23 @@ var dataDict = {}
 var positionsData;
 var popup;
 var dp03
+
+
+
 		var layerColors = {
-G4000: "#e62790",
-G5220: "#00347B",
-G5210: "#249edc",
-G5200: "#6929c4",
-G5410: "#20659d",
-G5400: "#cf77ad",
-G4110: "#851c6a",
-G5420: "#a56eff",
-G4210: "#006600",
-G4040: "#CC6A19",
-G4020: "#E5BD3F",
-X0072:'red', 
-X0001:"magenta", X0014:"green", X0005:"gold", X0029:"gold"
+G4000: "#9cbc34",
+G5220: "#5f5848",
+G5210: "#60e54e",
+G5200: "#697253",
+G5410: "#a0e642",
+G5400: "#acb098",
+G4110: "#e0dd37",
+G5420: "#d9ea81",
+G4210:"#9b8e33",
+G4040: "#4caa30",
+G4020: "#3c9341",
+X0072:"#9ba672", 
+X0001:"#789436", X0014:"#9dd48d", X0005:"#568450", X0029:"#6b6628"
 		}
 		
 		var tenesee = [-86.7501,36.1708]
@@ -175,7 +178,7 @@ function setCenter(latLng){
 	//console.log(map.getStyle().layers)
 	//console.log(latLng,pointOnScreen)
 	var features = map.queryRenderedFeatures(pointOnScreen, {
-	  	layers: ['group2-5000s-xs_fill','group1-4000s_fill']
+	  	layers: ['group2-5000s-xs_fill','group1-4000s_fill','cbsa_fill']
 	  })
 	  var geoids = []
 	  var noDups = []
@@ -189,16 +192,19 @@ function setCenter(latLng){
 	  }
 	 // console.log(geoids)
 	  
-  	//	console.log(features)
+  		console.log(noDups)
 	  var filter = ['in', 'layer'].concat(geoids);
 	 		  map.setFilter('group2-5000s-xs',filter)
 	 		  map.setFilter('group1-4000s',filter)
+	 		  map.setFilter('cbsa',filter)
 	  
 	  var displayString = noDups.length+" geographies overlap at this location.<br><br>These are the positions:<br>"
 	  var populationsDict ={}
 	  var householdsDict = {}
 	  var positionsCount = 0
+	  
 	  for(var n in noDups){
+		  
 		  var geoid = noDups[n]['properties']["geo_id"]
 		  var mtfcc = noDups[n]['properties']["mtfcc"]
 		  var population = censusData["population"][mtfcc+"_"+geoid]
@@ -289,14 +295,16 @@ function drawHills(data){
 	var w = 400
 	var h = 200
 	var p = 10
-	var yScale = d3.scaleSqrt().domain([min,max]).range([5,(h-p*2)])
+	var yScale = d3.scaleSqrt().domain([min,max]).range([5,6000])
 	var svg = d3.select("#info").append("svg").attr('width',w).attr("height",h).attr("class","info")
     const curve = d3.line().curve(d3.curveCardinal);
 	var order = 0
 	var xOffset = 30
 	for(var d in data){
 		//console.log(data[d],d)
-		var lineData = [[0+order*xOffset,h-p],[30+order*xOffset,h-p-yScale(data[d])],[60+order*xOffset,h-p]]
+		var lineData = [[0+order*xOffset,h-p],
+		[30+order*xOffset,h-p-Math.sqrt(yScale(data[d])/Math.PI)]
+		,[60+order*xOffset,h-p]]
 		order+=1
 		svg.append("path")
 		.attr("d",curve(lineData))
@@ -316,7 +324,11 @@ function drawCircles(data){
 	var w = 200
 	var h = 200
 	var p = 10
-	var rScale = d3.scaleSqrt().domain([min,max]).range([0,(h-p*2)/2])
+	//circle area is πr2
+	//var r = Math.sqrt(area/Math.PI)
+	//var area = r*r*Math.PI
+	
+	var rScale = d3.scaleSqrt().domain([min,max]).range([0,10000])
 
 	var svg = d3.select("#info").append("svg").attr('width',w).attr("height",h).attr("class","info")
 	svg.selectAll("circle")
@@ -324,16 +336,19 @@ function drawCircles(data){
 	.enter()
 	.append("circle")
 	.attr("r",function(d){
-		return rScale(data[d])
+		return Math.sqrt(rScale(data[d])/Math.PI)
 	})
 	.attr("cx",100)
 	.attr("cy",function(d){
-		return h-rScale(data[d])-p
+		return h-Math.sqrt(rScale(data[d])/Math.PI)
 	})
 	.attr("fill","none")
-	.attr("stroke-width",6)
+	.attr("stroke-width",2)
 	.attr("stroke",function(d){return layerColors[d]})
-	.attr("opacity",.5)
+	.attr("opacity",1)
+	.on("mouseover",function(d,i){
+		console.log(data[d])
+	})
 }
 
 
@@ -385,29 +400,30 @@ center: [0, 1],
 	 	 // map.on("move",function(){
 	 	 // 	console.log(map.getZoom())
 	 	 // })
-			 var tempColors =["#607e78",
-"#53eca6",
-"#39725d",
-"#70e5d4",
-"#369168",
-"#b2dacb",
-"#53c694",
-"#5dac9c"]
 			//
 			//
 			
-			map.setPaintProperty("group1-4000s",'line-color',
-			["match", ["get","mtfcc"], 
-			"G4000",layerColors["G4000"],
-			"G4020",layerColors["G4020"],
-			"G4040",layerColors["G4040"],
-			"G4110",layerColors["G4110"],
-			"G4210",layerColors["G4210"],"black"
-			]
-		)
+			// map.setPaintProperty("group1-4000s",'line-color',
+// 			["match", ["get","mtfcc"],
+// 			"G4000",layerColors["G4000"],
+// 			"G4020",layerColors["G4020"],
+// 			"G4040",layerColors["G4040"],
+// 			"G4110",layerColors["G4110"],
+// 			"G4210",layerColors["G4210"],"black"
+// 			]
+// 		)
 		
 				
-		map.setLayoutProperty("group1-4000s",'line-sort-key',
+	map.setLayoutProperty("group1-4000s",'line-sort-key',
+		["match", ["get","mtfcc"], 
+		"G4000",5,
+		"G4020",4,
+		"G4040",3,
+		"G4110",2,
+		"G4210",1,5
+		]
+		)
+		map.setPaintProperty("group1-4000s",'line-offset',
 			["match", ["get","mtfcc"], 
 			"G4000",5,
 			"G4020",4,
@@ -416,37 +432,37 @@ center: [0, 1],
 			"G4210",1,5
 			]
 			)
-	map.setPaintProperty("group1-4000s",'line-width',
-		["match", ["get","mtfcc"], 
-		"G4000",1,
-		"G4020",2,
-		"G4040",3,
-		"G4110",4,
-		"G4210",5,1
-		]
-		)
-		
-map.setPaintProperty("group2-5000s-xs",'line-color',
-	["match", ["get","mtfcc"], 
-	"G5220",layerColors["G5220"],
-	"G5210",layerColors["G5210"],
-	"G5420",layerColors["G5420"],
-	"G5200",layerColors["G5200"],
-	"G5410",layerColors["G5410"],
-	"G5400",layerColors["G5400"],"black"
-	]
-	)
+	// map.setPaintProperty("group1-4000s",'line-width',
+	// 	["match", ["get","mtfcc"],
+	// 	"G4000",1,
+	// 	"G4020",2,
+	// 	"G4040",3,
+	// 	"G4110",4,
+	// 	"G4210",5,1
+	// 	]
+	// 	)
+		//
+// map.setPaintProperty("group2-5000s-xs",'line-color',
+// 	["match", ["get","mtfcc"],
+// 	"G5220",layerColors["G5220"],
+// 	"G5210",layerColors["G5210"],
+// 	"G5420",layerColors["G5420"],
+// 	"G5200",layerColors["G5200"],
+// 	"G5410",layerColors["G5410"],
+// 	"G5400",layerColors["G5400"],"black"
+// 	]
+// 	)
 	
-map.setPaintProperty("group2-5000s-xs",'line-width',
-	["match", ["get","mtfcc"], 
-	"G5220",6,
-	"G5210",7,
-	"G5420",8,
-	"G5200",9,
-	"G5410",10,
-	"G5400",11,11
-	]
-	)
+// map.setPaintProperty("group2-5000s-xs",'line-width',
+// 	["match", ["get","mtfcc"],
+// 	"G5220",6,
+// 	"G5210",7,
+// 	"G5420",8,
+// 	"G5200",9,
+// 	"G5410",10,
+// 	"G5400",11,11
+// 	]
+// 	)
 	
 map.setLayoutProperty("group2-5000s-xs",'line-sort-key',
 	["match", ["get","mtfcc"], 
@@ -456,6 +472,17 @@ map.setLayoutProperty("group2-5000s-xs",'line-sort-key',
 	"G5200",3,
 	"G5410",2,
 	"G5400",1,1
+	]
+	)
+	
+map.setPaintProperty("group2-5000s-xs",'line-offset',
+	["match", ["get","mtfcc"], 
+	"G5220",.5,
+	"G5210",1,
+	"G5420",1.5,
+	"G5200",2,
+	"G5410",2.5,
+	"G5400",3,1
 	]
 	)
 	
