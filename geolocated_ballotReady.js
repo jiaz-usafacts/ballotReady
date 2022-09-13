@@ -184,18 +184,25 @@ function setCenter(latLng){
 	  var noDups = []
 	  for(var f in features){
 	  	var feature = features[f]
-		  var geoid = feature.properties["layer"]
+		  var geoid = feature.properties["geo_id"]
 		  if(geoids.indexOf(geoid)==-1){
 		  	geoids.push(geoid)
 			  noDups.push(feature)
 		  }
 	  }
-	 // console.log(geoids)
+	  console.log(features)
 	  
   		console.log(noDups)
-	  var filter = ['in', 'layer'].concat(geoids);
+	  var filter = ['in', 'geo_id'].concat(geoids);
+	  var filter2 = ['in', 'geo_id'].concat(geoids);
+	  
+	  
 	 		  map.setFilter('group2-5000s-xs',filter)
 	 		  map.setFilter('group1-4000s',filter)
+	 		  //map.setFilter('centroids',filter)
+	  
+	  console.log(filter)
+	 		  map.setFilter('centroids-7yqn30',filter2)
 	 		  map.setFilter('cbsa',filter)
 	  
 	  var displayString = noDups.length+" geographies overlap at this location.<br><br>These are the positions:<br>"
