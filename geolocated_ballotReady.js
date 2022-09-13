@@ -12,24 +12,53 @@ var positionsData;
 var popup;
 var dp03
 
+var colors = ["#b2459a",
+"#61bc6a",
+"#ca73d4",
+"#9cb241",
+"#6a70d7",
+"#cc9537",
+"#543788",
+"#6c8a39",
+"#cd407f",
+"#45c097",
+"#db5458",
+"#6d8dd7",
+"#bd562b",
+"#c785cc",
+"#b18042",
+"#832b65",
+"#a34639",
+"#da73a0",
+"#8a2947",
+"#cf5570"]
+
+var colorIndex = 0
+var layerColors ={}
+for(var i in mtfccNames ){
+	var color = colors[colorIndex%colors.length]
+	colorIndex+=1
+	console.log(i,mtfccNames[i],color)
+	layerColors[i]=color
+}
 
 
-		var layerColors = {
-G4000: "#9cbc34",
-G5220: "#5f5848",
-G5210: "#60e54e",
-G5200: "#697253",
-G5410: "#a0e642",
-G5400: "#acb098",
-G4110: "#e0dd37",
-G5420: "#d9ea81",
-G4210:"#9b8e33",
-G4040: "#4caa30",
-G4020: "#3c9341",
-X0072:"#9ba672", 
-X0001:"#789436", X0014:"#9dd48d", X0005:"#568450", X0029:"#6b6628"
-		}
-		
+	// 	var layerColors = {
+// G4000: "#9cbc34",
+// G5220: "#5f5848",
+// G5210: "#60e54e",
+// G5200: "#697253",
+// G5410: "#a0e642",
+// G5400: "#acb098",
+// G4110: "#e0dd37",
+// G5420: "#d9ea81",
+// G4210:"#9b8e33",
+// G4040: "#4caa30",
+// G4020: "#3c9341",
+// X0072:"#9ba672",
+// X0001:"#789436", X0014:"#9dd48d", X0005:"#568450", X0029:"#6b6628"
+// 		}
+//
 		var tenesee = [-86.7501,36.1708]
 
 		var censusData = {}
@@ -199,7 +228,7 @@ function setCenter(latLng){
 	  
 	 		  map.setFilter('group2-5000s-xs',filter)
 	 		  map.setFilter('group1-4000s',filter)
-	 		  //map.setFilter('centroids',filter)
+	 		  map.setFilter('centroids-withlabel-8l1mfb',filter)
 	  
 	  console.log(filter)
 	 		  map.setFilter('centroids-7yqn30',filter2)
@@ -373,7 +402,7 @@ zoom: 3,
 center: [0, 1],
 				//preserveDrawingBuffer: true,
 		minZoom:3,
-		maxZoom:12,// ,
+		maxZoom:9,// ,
 		 // maxBounds: maxBounds,
 		center:[-96,37.5],
 		//https://docs.mapbox.com/mapbox-gl-js/example/projections/
@@ -410,16 +439,16 @@ center: [0, 1],
 			//
 			//
 			
-			// map.setPaintProperty("group1-4000s",'line-color',
-// 			["match", ["get","mtfcc"],
-// 			"G4000",layerColors["G4000"],
-// 			"G4020",layerColors["G4020"],
-// 			"G4040",layerColors["G4040"],
-// 			"G4110",layerColors["G4110"],
-// 			"G4210",layerColors["G4210"],"black"
-// 			]
-// 		)
-		
+	 map.setPaintProperty("group1-4000s",'line-color',
+ 			["match", ["get","mtfcc"],
+ 			"G4000",layerColors["G4000"],
+ 			"G4020",layerColors["G4020"],
+ 			"G4040",layerColors["G4040"],
+ 			"G4110",layerColors["G4110"],
+ 			"G4210",layerColors["G4210"],"gold"
+ 			]
+ 		)
+
 				
 	map.setLayoutProperty("group1-4000s",'line-sort-key',
 		["match", ["get","mtfcc"], 
@@ -449,16 +478,16 @@ center: [0, 1],
 	// 	]
 	// 	)
 		//
-// map.setPaintProperty("group2-5000s-xs",'line-color',
-// 	["match", ["get","mtfcc"],
-// 	"G5220",layerColors["G5220"],
-// 	"G5210",layerColors["G5210"],
-// 	"G5420",layerColors["G5420"],
-// 	"G5200",layerColors["G5200"],
-// 	"G5410",layerColors["G5410"],
-// 	"G5400",layerColors["G5400"],"black"
-// 	]
-// 	)
+ map.setPaintProperty("group2-5000s-xs",'line-color',
+ 	["match", ["get","mtfcc"],
+ 	 "G5220",layerColors["G5220"],
+ 	 "G5210",layerColors["G5210"],
+ 	 "G5420",layerColors["G5420"],
+ 	 "G5200",layerColors["G5200"],
+ 	 "G5410",layerColors["G5410"],
+ 	 "G5400",layerColors["G5400"],"gold"
+ 	]
+ 	)
 	
 // map.setPaintProperty("group2-5000s-xs",'line-width',
 // 	["match", ["get","mtfcc"],
@@ -470,6 +499,25 @@ center: [0, 1],
 // 	"G5400",11,11
 // 	]
 // 	)
+	
+	map.setPaintProperty("centroids-7yqn30",'icon-halo-width',10
+		
+		)
+	map.setPaintProperty("centroids-withlabel-8l1mfb",'text-halo-color',
+	["match", ["get","mtfcc"], 
+ 	"G5220",layerColors["G5220"],
+ 	"G5210",layerColors["G5210"],
+ 	"G5420",layerColors["G5420"],
+ 	"G5200",layerColors["G5200"],
+ 	"G5410",layerColors["G5410"],
+ 	"G5400",layerColors["G5400"],
+	"G4000",layerColors["G4000"],
+	"G4020",layerColors["G4020"],
+	"G4040",layerColors["G4040"],
+	"G4110",layerColors["G4110"],
+	"G4210",layerColors["G4210"],"gold"
+	]
+	)
 	
 map.setLayoutProperty("group2-5000s-xs",'line-sort-key',
 	["match", ["get","mtfcc"], 
@@ -503,7 +551,7 @@ map.setPaintProperty("group2-5000s-xs",'line-offset',
 			 center = [e.lngLat.lng,e.lngLat.lat]
 			  map.flyTo({
 				  center: center,
-				  zoom:8
+				  zoom:7
 			  });
 			  
 			  if(clicked==true){
@@ -519,7 +567,7 @@ map.setPaintProperty("group2-5000s-xs",'line-offset',
 	  			if(result!=null){
 	 				center = result.result.center
 					//console.log(center)
-					map.flyTo({center:center, zoom:8})
+					map.flyTo({center:center, zoom:7})
 					if(resulted==true){
 					  	 resulted=false
 					  	 map.on("moveend",function(){
