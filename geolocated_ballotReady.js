@@ -211,24 +211,27 @@ function setCenter(latLng){
 	  })
 	  var geoids = []
 	  var noDups = []
+	  var layerIds = []
 	  for(var f in features){
 	  	var feature = features[f]
 		  var geoid = feature.properties["geo_id"]
+		  var layerId = feature.properties["layer"]
 		  if(geoids.indexOf(geoid)==-1){
 		  	geoids.push(geoid)
 			  noDups.push(feature)
+			  layerIds.push(layerId)
 		  }
 	  }
 	  console.log(features)
 	  
   		console.log(noDups)
-	  var filter = ['in', 'geo_id'].concat(geoids);
+	  var filter = ['in', 'layer'].concat(layerIds);
 	  var filter2 = ['in', 'geo_id'].concat(geoids);
 	  
 	  
 	 		  map.setFilter('group2-5000s-xs',filter)
 	 		  map.setFilter('group1-4000s',filter)
-	 		  map.setFilter('centroids-withlabel-8l1mfb',filter)
+	 		  map.setFilter('centroids-withlabel-8l1mfb',filter2)
 	  
 	  console.log(filter)
 	 		  map.setFilter('centroids-7yqn30',filter2)
@@ -438,6 +441,11 @@ center: [0, 1],
 	 	 // })
 			//
 			//
+			 
+			 map.on("mousemove",function(e){
+				 const features = map.queryRenderedFeatures(e.point);
+			 	
+			 })
 			
 	 map.setPaintProperty("group1-4000s",'line-color',
  			["match", ["get","mtfcc"],
